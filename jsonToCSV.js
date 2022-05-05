@@ -1,19 +1,13 @@
 import {Parser} from 'json2csv'
 import fs from 'fs-extra'
 
-const shopsDir = 'D:/tinderApp_index_test/shopee'
+const shopsDir = 'D:/shopee'
 
 const shops = fs.readdirSync(shopsDir)
+const json2csvParser = new Parser();
 
-const testshop = 'shop_2175202'
-
-const items = fs.readdirSync(shopsDir+'/'+testshop+'/itemsInfo_tinder')
-
-const jsonData = []
-
-// 每一家店讀一次
-const insertToJsonArr = (arr, itemPath) => {
-  const itemJson = fs.readJSONSync(shopsDir+'/'+testshop+'/itemsInfo_tinder'+'/'+itemPath)
+const insertToJsonArr = (arr, itemShop, itemPath) => {
+  const itemJson = fs.readJSONSync(shopsDir+'/'+itemShop+'/itemsInfo_tinder'+'/'+itemPath)
   let csvdata = {
     sp_shopid: itemJson.sp_shopid,
     name: itemJson.name,
@@ -23,14 +17,14 @@ const insertToJsonArr = (arr, itemPath) => {
   arr.push(csvdata)
 }
 
-insertToJsonArr(jsonData, items[3])
-insertToJsonArr(jsonData, items[4])
-insertToJsonArr(jsonData, items[5])
-console.log(jsonData)
+shops.forEach((shop) => {
+  const items = fs.readdirSync(shopsDir+'/'+shop+'/itemsInfo_tinder')
+  const jsonData = []
 
-const json2csvParser = new Parser();
-const csv = json2csvParser.parse(jsonData);
-fs.appendFileSync('./test.csv',csv)
-
-
-console.log(csv);
+  items.forEach((item) => {
+    insertToJsonArr(jsonData, shop, item)
+  })
+  
+  const csv = json2csvParser.parse(jsonData);
+  fs.appendFileSync('./test.csv',csv)
+})

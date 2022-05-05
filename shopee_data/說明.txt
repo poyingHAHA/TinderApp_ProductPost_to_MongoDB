@@ -1,0 +1,6 @@
+1. 格式
+   sp_shopid, name, labels, feLabels
+
+2. labels跟feLabels的資料以@@分隔
+
+3. 有些商品沒有feLabels
